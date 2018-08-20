@@ -11,7 +11,7 @@ class FinanceSheetCrawler:
         '''
         self.symbol = symbols
         
-        if sheet_typ == 'ALL': self.sheet_typ = -1
+        if sheet_typ in ['ALL', -1]: self.sheet_typ = -1
         elif sheet_typ == 'IS': self.sheet_typ = 0
         elif sheet_typ == 'BS': self.sheet_typ = 1
         else: self.sheet_typ = 2
