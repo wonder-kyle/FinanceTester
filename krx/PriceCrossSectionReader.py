@@ -8,9 +8,12 @@ from pandas.tseries.offsets import BDay
 
 class PriceCrossSection:
     def __init__(self, date=None):
-        if date == None:
-             self.date = datetime.today() - 0*BDay()  # 오늘 날짜
-        else:  self.date = pd.to_datetime(date) - 0*BDay()
+        if date == None: self.date = datetime.today()
+        else: self.date = pd.to_datetime(date)
+        
+        if self.date.today().weekday() >= 5:
+            self.date = datetime.today() - 1*BDay()
+        else: self.date = datetime.today() - 0*BDay()
         
     def read(self):
         # STEP 01: Generate OTP

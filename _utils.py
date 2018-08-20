@@ -21,4 +21,9 @@ def _validate_dates(start, end):
         end = datetime.today()
     return start, end
 
+class NegativeDenominatorError(Exception):
+    #생성할때 value 값을 입력 받는다.
+    def __init__(self):
+        self.value = 'Negative Denominator Error'
+    
 # retrieved from https://github.com/FinanceData/FinanceDataReader

@@ -1,18 +1,23 @@
 # coding: utf-8
-from FinanceDataReader.data import (PriceReader, SheetReader, StockListing, PriceCrossSectionReader)
-from FinanceDataReader.sheet.data import (FinanceSheetCrawler)
+from FinanceTester.data import (PriceReader, SheetReader, StockListing, PriceCrossSectionReader)
+from FinanceTester.sheet.data import FinanceSheetCrawler
+from FinanceTester._utils import NegativeDenominatorError
 import pandas as pd
+import numpy as np
 
 class strategy:
     def __init__(self):
-        self.time = None
+        self.date = None
         self.scoring_func = None #function
     
     def fit(self, scoring_func):
         self.scoring_func = scoring_func
         
     def screening(self, basket):
-        price_df=PriceCrossSectionReader().set_index('Symbol').reindex(basket)
+        price_df=PriceCrossSectionReader().set_index('Symbol').reindex(basket).dropna(how='all')
+        if price_df.empty:
+            print('You might input wrong basket. PriceCrossSection DataFrame is empty.')
+            return np.nan
         score=dict()
         for symbol in basket:
             # Step 1 : Generate DataFrame of each symbol
@@ -30,10 +35,21 @@ class strategy:
             temp_price = price_df.loc[symbol]
             symbol_df = pd.concat([temp_sheet,temp_price],axis=0)
             # Step 2 : Scoring
-            symbol_score = self.scoring_func(symbol_df)
-            score[symbol] = symbol_score
-         
-        return pd.DataFrame.from_dict(score,orient='index',columns={'score'}).sort_values('score')
+            try: symbol_score = self.scoring_func(symbol_df)
+            except NegativeDenominatorError:
+                print('{} has negative denominator'.format(symbol))
+                symbol_score = np.nan
+            except KeyError:
+                print('{} doesn\'t have account which you ask'.format(symbol))
+                symbol_score = np.nan
+            except Error:
+                print('{} has error during scoring'.format(symbol))
+                symbol_score = np.nan
+            else: score[symbol] = symbol_score
+        
+        df=pd.DataFrame.from_dict(score,orient='index',columns={'score'})
+        df.score=df.score.astype('float')
+        return df.sort_values('score')
     
     def backtesting(self, basket, date): #구현 예정
         msg = "which basket would be tested for?"

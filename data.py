@@ -1,7 +1,7 @@
-from FinanceDataReader.investing.data import (InvestingDailyReader)
-from FinanceDataReader.krx.listing import (KrxStockListing)
-from FinanceDataReader.krx.PriceCrossSectionReader import (PriceCrossSection)
-from FinanceDataReader.sheet.data import (FinanceSheetCrawler)
+from FinanceTester.investing.data import (InvestingDailyReader)
+from FinanceTester.krx.listing import (KrxStockListing)
+from FinanceTester.krx.PriceCrossSectionReader import (PriceCrossSection)
+from FinanceTester.sheet.data import (FinanceSheetCrawler)
 
 def PriceReader(symbol, start=None, end=None, country=None):
     return InvestingDailyReader(symbols=symbol, start=start, end=end, country=country).read()

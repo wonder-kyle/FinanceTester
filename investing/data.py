@@ -2,7 +2,7 @@ import requests
 import pandas as pd
 import json
 from io import StringIO
-from FinanceDataReader._utils import (_convert_letter_to_num, _validate_dates)
+from FinanceTester._utils import (_convert_letter_to_num, _validate_dates)
 
 class InvestingDailyReader:
     def __init__(self, symbols, start=None, end=None, country=None):
