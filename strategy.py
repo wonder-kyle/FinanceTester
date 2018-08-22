@@ -53,17 +53,17 @@ class strategy:
     
     def backtesting(self, basket): #implementing...
         
-        '''
-        price_df=PriceCrossSectionReader().set_index('Symbol').reindex(basket).dropna(how='all')
-        if price_df.empty:
-            print('You might input wrong basket. PriceCrossSection DataFrame is empty.')
-            return np.nan
+        price_dict={}
+        for yr in range(2013,2019):
+            price_dict[yr]=PriceCrossSectionReader(date = '{}-04-10'.format(yr)).set_index('Symbol').reindex(basket).dropna(how='all')
         
-        date=pd.to_datetime(temp_sheet.columns)
+        
         
         score=dict()
         for symbol in basket:
             temp_sheet = SheetReader(symbols=symbol,sheet_typ= -1,freq_typ='Y').iloc[:,1:-1].dropna(how='all')
+            temp_date = pd.to_datetime(temp_sheet.columns)
+            
             temp_price = price_df.loc[symbol]
             symbol_df = pd.concat([temp_sheet,temp_price],axis=0)
             # Step 2 : Scoring
@@ -82,4 +82,3 @@ class strategy:
         df=pd.DataFrame.from_dict(score,orient='index',columns={'score'})
         df.score=df.score.astype('float')
         return df.sort_values('score')
-        '''
